@@ -8,6 +8,7 @@ type Socio = {
 };
 
 type ResultadoSocio = {
+  mensaje: string;
   dni: string;
   socio?: Socio;
   estado: string;
@@ -24,24 +25,24 @@ const ControlAcceso2: React.FC = () => {
   });
     socket.on("scanner-entrada", (data: ResultadoSocio) => {
       console.log("🚀 ~ ControlAcceso2 ~ data:", data)
-      const { dni, socio, estado } = data;
-      setEstado(`${estado} (${dni}) ENTRADA`);
-      if (socio && socio.dni === dni) {
-        setFotoVisible(true);
-      } else {
-        setFotoVisible(false);
-      }
+      const { dni, socio, mensaje } = data;
+      setEstado(`${mensaje} ${socio?.nombre} (${dni})  ENTRADA`);
+      // if (socio && socio.dni === dni) {
+      //   setFotoVisible(true);
+      // } else {
+      //   setFotoVisible(false);
+      // }
     });
 
     socket.on("scanner-salida", (data: ResultadoSocio) => {
       console.log("🚀 ~ ControlAcceso2 ~ data:", data)
-      const { dni, socio, estado } = data;
-      setEstado(`${estado} (${dni}) SALIDA`);
-      if (socio && socio.dni === dni) {
-        setFotoVisible(true);
-      } else {
-        setFotoVisible(false);
-      }
+      const { dni, socio, mensaje } = data;
+      setEstado(`${mensaje} ${socio?.nombre} (${dni}) SALIDA`);
+      // if (socio && socio.dni === dni) {
+      //   setFotoVisible(true);
+      // } else {
+      //   setFotoVisible(false);
+      // }
     });
 
     return () => {

@@ -1,13 +1,17 @@
-import { Box, Button, TextField, Typography } from "@mui/material"
-import { imprimir } from "./../../api/paseDiario"
-import { useState } from "react"
-import type { DataPaseDiario } from "../../types/dataPaseDiario"
+import React, { useState } from 'react'
+// import { imprimir } from '../../api/paseDiario'
+import type { DataPaseMantenimiento } from '../../types/dataPaseDiario'
+import { Box, Button, TextField, Typography } from '@mui/material'
+import { DocumentoField } from '../../components/DocumentoField'
+import { generarCodigoQR } from '../../functions/generarCodigoQr'
 
-const PaseDiario = () => {
-    const [datos, setDatos] = useState<DataPaseDiario>({
+const PaseMantenimiento = () => {
+
+   const [datos, setDatos] = useState<DataPaseMantenimiento>({
         nombre: '',
         apellido: '',
-        dni: ''
+        dni: '',
+        tarea: ''
     })
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -18,11 +22,18 @@ const PaseDiario = () => {
     const onSumbit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
         try {
-           await imprimir(datos)
+        //    await imprimir(datos)
+           const codigo = generarCodigoQR({
+               tipo: 'mantenimiento',
+               dni: datos.dni,
+               fechaVencimiento: new Date(Date.now() + 12 * 60 * 60 * 1000),
+           })
+           console.log("🚀 ~ onSumbit ~ codigo:", codigo)
         } catch (error) {
           console.error("Error al enviar el formulario:", error)
         }
     }
+
   return (
     <Box component={'form'} sx={{
         display: 'flex',
@@ -30,9 +41,11 @@ const PaseDiario = () => {
         gap: 2
     }} maxWidth={'sm'} onSubmit={onSumbit}>
         <Typography variant="h4" component="h1" gutterBottom>
-            Pase diario
+            Pase de Matenimiento
         </Typography>
         <TextField 
+            autoFocus
+            autoComplete='off'
             required
             value={datos.nombre}
             onChange={handleChange}
@@ -43,6 +56,7 @@ const PaseDiario = () => {
         />
         <TextField 
             required
+            autoComplete='off'
             value={datos.apellido}
             onChange={handleChange}
             label="Apellido" 
@@ -50,20 +64,31 @@ const PaseDiario = () => {
             variant="outlined" 
             fullWidth 
         />
-        <TextField 
+        <DocumentoField
             required
+            autoComplete='off'
             value={datos.dni}
-            onChange={handleChange}
+            onChange={(value)=> setDatos({...datos, dni: value})}
             label="Documento" 
             name="dni"
+            variant="outlined" 
+            fullWidth
+        />
+        <TextField 
+            required
+            autoComplete='off'
+            value={datos.tarea}
+            onChange={handleChange}
+            label="Tarea a realizar" 
+            name="tarea"
             variant="outlined" 
             fullWidth 
         />
         <Button type="submit" variant="contained" color="primary">
-            Enviar
+            Imprimir
         </Button>
     </Box>
   )
 }
 
-export default PaseDiario
+export default PaseMantenimiento

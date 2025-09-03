@@ -4,7 +4,7 @@ import routes from './constants/routes'
 import Home from './pages/home';
 import InfoDisplayScreen from './pages/infoDisplayScreen';
 import ControlAcceso from './pages/controlAcceso';
-import PaseDiario from './pages/paseDiario';
+import Pases from './pages/pases';
 
 function App() {
   // const llamarApi = () => {
@@ -21,7 +21,7 @@ function App() {
             <Route path={routes.HOME} element={<Home />} />
             <Route path={routes.INFO_DISPLAY_SCREEN} element={<InfoDisplayScreen />} />
             <Route path={routes.CONTROL_ACCESO} element={<ControlAcceso />} />
-            <Route path={routes.PASE_DIARIO} element={<PaseDiario />} />
+            <Route path={routes.PASE_DIARIO} element={<Pases />} />
             <Route path="*" element={<Home />} />
           </Route>
         </Routes>
