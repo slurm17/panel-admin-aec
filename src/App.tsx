@@ -5,14 +5,9 @@ import Home from './pages/home';
 import InfoDisplayScreen from './pages/infoDisplayScreen';
 import ControlAcceso from './pages/controlAcceso';
 import Pases from './pages/pases';
+import Configuracion from './pages/configuracion';
 
 function App() {
-  // const llamarApi = () => {
-  //   fetch("http://localhost:4000/api/users")
-  //     .then(res => res.json())
-  //     .then(json => alert(JSON.stringify(json)))
-  //     .catch(err => console.error("Error al consumir API:", err));
-  // }
   return (
       <HashRouter>
         <Routes>
@@ -22,6 +17,7 @@ function App() {
             <Route path={routes.INFO_DISPLAY_SCREEN} element={<InfoDisplayScreen />} />
             <Route path={routes.CONTROL_ACCESO} element={<ControlAcceso />} />
             <Route path={routes.PASE_DIARIO} element={<Pases />} />
+            <Route path={routes.CONFIG} element={<Configuracion />} />
             <Route path="*" element={<Home />} />
           </Route>
         </Routes>

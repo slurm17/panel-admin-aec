@@ -26,10 +26,9 @@ export const DocumentoField: React.FC<DocumentoFieldProps> = ({
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const rawValue = cleanNumber(e.target.value);
-
     // Solo permitir números
     if (!/^\d*$/.test(rawValue)) return;
-
+    if(rawValue.length > 9) return
     setInnerValue(rawValue);
     onChange?.(rawValue); // devolvemos el valor sin puntos al padre
   };
@@ -37,9 +36,7 @@ export const DocumentoField: React.FC<DocumentoFieldProps> = ({
   return (
     <TextField
       {...props}
-      slotProps={{
-        htmlInput: { maxLength: 11, minLength: 9 }
-      }}
+      // implementar reestriccion de digitos
       value={formatNumber(innerValue)}
       onChange={handleChange}
     />

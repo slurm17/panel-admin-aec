@@ -1,4 +1,7 @@
 import { createTheme } from '@mui/material/styles'
+import type {} from '@mui/x-date-pickers/themeAugmentation';
+import { esES as coreEsES } from '@mui/material/locale';
+import { esES } from '@mui/x-date-pickers/locales';
 const bktValues = {
   xs: 0,
   sm: 600,
@@ -30,6 +33,18 @@ export const theme = createTheme({
     }
   },
   components: {
+    MuiDatePicker: {
+      defaultProps: {
+        displayWeekNumber: true,
+      },
+    },
+    MuiDateCalendar: {
+      styleOverrides: {
+        root: {
+          backgroundColor: '#f0f0f0',
+        },
+      },
+    },
     MuiButton: {
       styleOverrides: {
         root: {
@@ -73,5 +88,7 @@ export const theme = createTheme({
       },
     },
   },
-}
+},
+esES, // x-date-pickers translations
+coreEsES, // core translations
 )

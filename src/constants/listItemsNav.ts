@@ -9,4 +9,5 @@ export const listItemsNav = [
   { text: 'Pases', /*icon: DateRangeIcon,*/ navigateTo: routes.PASE_DIARIO },
   { text: 'Control de acceso', /*icon: DateRangeIcon,*/ navigateTo: routes.CONTROL_ACCESO },
   { text: 'Imagenes y textos ', /*icon: DateRangeIcon,*/ navigateTo: routes.INFO_DISPLAY_SCREEN },
+  { text: 'Configuración ', /*icon: DateRangeIcon,*/ navigateTo: routes.CONFIG },
 ]

@@ -90,7 +90,7 @@ const Textos = () => {
 }
   
   if (loading) {
-      return <Box>Cargando imágenes...</Box>;
+      return <Box>Cargando textos...</Box>;
   }
   if (error) {
       return <Box color="error.main">{error}</Box>;

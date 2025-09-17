@@ -4,6 +4,10 @@ import type { DataPaseMantenimiento } from '../../types/dataPaseDiario'
 import { Box, Button, TextField, Typography } from '@mui/material'
 import { DocumentoField } from '../../components/DocumentoField'
 import { generarCodigoQR } from '../../functions/generarCodigoQr'
+import { postQrCode } from '../../api/qr.api'
+import { toLocalISOString } from '../../functions/toLocalISOString'
+import { set } from 'date-fns'
+import { imprimir } from '../../api/paseDiario'
 
 const PaseMantenimiento = () => {
 
@@ -20,17 +24,26 @@ const PaseMantenimiento = () => {
     }
 
     const onSumbit = async (e: React.FormEvent<HTMLFormElement>) => {
+        const fechaVencimientoDate = set(new Date(), { hours: 23, minutes: 59 })
         e.preventDefault()
         try {
-        //    await imprimir(datos)
-           const codigo = generarCodigoQR({
-               tipo: 'mantenimiento',
-               dni: datos.dni,
-               fechaVencimiento: new Date(Date.now() + 12 * 60 * 60 * 1000),
-           })
-           console.log("🚀 ~ onSumbit ~ codigo:", codigo)
+            const codigo = generarCodigoQR({
+                tipo: 'mantenimiento',
+                dni: datos.dni,
+                fechaVencimiento: fechaVencimientoDate,
+            })
+            await postQrCode({
+                codigo,
+                tipo: 'mantenimiento',
+                documento: datos.dni,
+                fecha_emitido: toLocalISOString(new Date()),
+                fecha_venc: toLocalISOString(fechaVencimientoDate),
+                tarea: datos.tarea
+            })
+            await imprimir({...datos, codigo, fechaEmision: toLocalISOString(new Date()), fechaVencimiento: toLocalISOString(fechaVencimientoDate)})
+            //    await imprimir(datos)
         } catch (error) {
-          console.error("Error al enviar el formulario:", error)
+            console.error("Error al enviar el formulario:", error)
         }
     }
 

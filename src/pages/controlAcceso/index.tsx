@@ -9,6 +9,7 @@ type Socio = {
 
 type ResultadoSocio = {
   mensaje: string;
+  data: object;
   dni: string;
   socio?: Socio;
   estado: string;
@@ -23,10 +24,11 @@ const ControlAcceso2: React.FC = () => {
     const socket = io(socketUrl, {
     transports: ["websocket"] // opcional, para evitar polling
   });
-    socket.on("scanner-entrada", (data: ResultadoSocio) => {
-      console.log("🚀 ~ ControlAcceso2 ~ data:", data)
-      const { dni, socio, mensaje } = data;
-      setEstado(`${mensaje} ${socio?.nombre} (${dni})  ENTRADA`);
+    socket.on("scanner-entrada", ({data, mensaje}) => {
+      setEstado(`${mensaje} ${JSON.stringify(data)}`);
+      // console.log("🚀 ~ ControlAcceso2 ~ data:", data)
+      // const { dni, socio, mensaje } = data;
+      // setEstado(`${mensaje} ${socio?.nombre} (${dni})  ENTRADA`);
       // if (socio && socio.dni === dni) {
       //   setFotoVisible(true);
       // } else {

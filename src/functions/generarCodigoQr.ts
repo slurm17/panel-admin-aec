@@ -5,10 +5,11 @@ interface DatosQR {
   dni: string;
   fechaVencimiento: Date;
   id?: string; // solo para invitado
+  fechaActual?: Date;
 }
 
-export function generarCodigoQR({ tipo, dni, fechaVencimiento, id }: DatosQR): string {
-  const fechaActual = new Date();
+export function generarCodigoQR({ tipo, dni, fechaActual, fechaVencimiento, id }: DatosQR): string {
+  // const fechaActual = new Date();
   const formatoFecha = (fecha: Date) => {
     const pad = (n: number) => n.toString().padStart(2, '0');
     const dd = pad(fecha.getDate());
@@ -18,7 +19,7 @@ export function generarCodigoQR({ tipo, dni, fechaVencimiento, id }: DatosQR): s
     const min = pad(fecha.getMinutes());
     return `${dd}${mm}${yyyy}_${hh}${min}`;
   };
-  const fechaActualStr = formatoFecha(fechaActual);
+  const fechaActualStr = formatoFecha(fechaActual || new Date());
   const fechaVencStr = formatoFecha(fechaVencimiento);
 
   switch (tipo) {

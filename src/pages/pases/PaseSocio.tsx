@@ -2,19 +2,25 @@ import { Box, Button, Card, CardContent, Divider, Stack, Typography } from "@mui
 import { useState } from "react"
 import { getSocioAccess } from "../../api/socio.api"
 import type { SocioAccess } from "../../types/socioAccess"
-import { format } from "date-fns"
+import { addDays, format, set } from "date-fns"
 import { DocumentoField } from "../../components/DocumentoField"
 import { generarCodigoQR } from "../../functions/generarCodigoQr"
+import { postQrCode } from "../../api/qr.api"
+import { toLocalISOString } from "../../functions/toLocalISOString"
+import { imprimir } from "../../api/paseDiario"
 
-const PaseSocio = () => {
-  const [datos, setDatos] = useState<{ dni: string }>({
-    dni: ''
+const PaseSocio = ({ vencHs }: { vencHs: number }) => {
+  const [datos, setDatos] = useState<{ dni: string, nombre: string }>({
+    dni: '',
+    nombre: '',
+    // apellido: '',
   })
   const [socioData, setSocioData] = useState<SocioAccess | null>(null)
   const onSumbit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     try {
       const data = await getSocioAccess(datos.dni)
+      setDatos({ ...datos, nombre: data.nombre })
       console.log(data)
       setSocioData(data)
     } catch (error) {
@@ -22,13 +28,27 @@ const PaseSocio = () => {
     }
   }
 
-  const imprimirPase = () => {
+  const imprimirPase = async () => {
+      const fechaVencimientoDate = set(addDays(new Date(), 1), { hours: vencHs, minutes: 0 })
       const codigo = generarCodigoQR({
           tipo: 'socio',
           dni: datos.dni,
-          fechaVencimiento: new Date(Date.now() + 12 * 60 * 60 * 1000),
+          fechaVencimiento: fechaVencimientoDate,
       })
-      console.log("🚀 ~ imprimirPase ~ codigo:", codigo)
+      try {
+        await postQrCode({
+          codigo,
+          tipo: 'socio',
+          documento: datos.dni,
+          fecha_emitido: toLocalISOString(new Date()),
+          fecha_venc: toLocalISOString(fechaVencimientoDate)
+        })
+        //    await imprimir(datos)
+        await imprimir({...datos, codigo, fechaEmision: toLocalISOString(new Date()), fechaVencimiento: toLocalISOString(fechaVencimientoDate)})
+        
+      } catch (error) {
+        console.error("Error al enviar el formulario:", error)
+      }
   }
 
   if (socioData) {
@@ -42,7 +62,7 @@ const PaseSocio = () => {
             <Divider sx={{ mb: 2 }} />
             <Stack spacing={1}>
               <Typography variant="body1">
-                <strong>Documento:</strong> {datos.dni}
+                <strong>Documento:</strong> {datos.dni.replace(/\B(?=(\d{3})+(?!\d))/g, ".")}
               </Typography>
               <Typography variant="body1">
                 <strong>Número de Socio:</strong> {socioData.num_socio}
@@ -52,7 +72,6 @@ const PaseSocio = () => {
               </Typography>
               <Stack direction="row" alignItems="center" spacing={1}>
                 <Typography variant="body1"><strong>Estado:</strong> {socioData.estado_socio} </Typography>
-                {/* <Chip label={estadoLabel} color={estadoColor} size="small" /> */}
               </Stack>
               <Typography variant="body1">
                 <strong>Fecha de Estado:</strong> {format(new Date(socioData.fecha_estado), "dd/MM/yyyy")}{/* HH:mm*/}
