@@ -31,6 +31,7 @@ const PaseInvitado = () => {
   const [pasesAImprimir, setPasesAImprimir] = useState<number>(1)
   const [socioData, setSocioData] = useState<SocioAccess | null>(null)
   const [errorSumbit, setErrorSubmit] = useState<string | null>(null)
+  const [errorSocio, setErrorSocio] = useState<string | null>(null)
   const [error, setError] = useState<FormValuesError>({
     inicioDate: '',
     inicioTime: '',
@@ -54,9 +55,9 @@ const PaseInvitado = () => {
     try {
       const data = await getSocioAccess(datos.dni)
       setDatos({ ...datos, nombre: data.nombre })
-      console.log(data)
       setSocioData(data)
     } catch (error) {
+      setErrorSocio("Socio no encontrado")
       console.error("Error al enviar el formulario:", error)
     }
   }
@@ -261,7 +262,7 @@ const PaseInvitado = () => {
           autoComplete='off'
           required
           value={datos.dni}
-          onChange={(value) => setDatos({ ...datos, dni: value })}
+          onChange={(value) => {setDatos({ ...datos, dni: value }); setErrorSocio(null)}}
           label="Documento"
           name="dni"
           variant="outlined"
@@ -270,10 +271,11 @@ const PaseInvitado = () => {
         type="submit" 
         variant="contained" 
         color="primary"
-        disabled={!datos.dni || datos.dni.length < 7}
+        disabled={!datos.dni || datos.dni.length < 7 || !!errorSocio}
       >
           Buscar Socio
       </Button>
+      {errorSocio && <Typography color="error">{errorSocio}</Typography>}
     </Box>
   )
 }

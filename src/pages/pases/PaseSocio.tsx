@@ -15,6 +15,7 @@ const PaseSocio = ({ vencHs }: { vencHs: number }) => {
     nombre: '',
     // apellido: '',
   })
+  const [error, setError] = useState<string | null>(null)
   const [socioData, setSocioData] = useState<SocioAccess | null>(null)
   const onSumbit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -24,7 +25,8 @@ const PaseSocio = ({ vencHs }: { vencHs: number }) => {
       console.log(data)
       setSocioData(data)
     } catch (error) {
-      console.error("Error al enviar el formulario:", error)
+      setError("Socio no encontrado")
+      console.error(error)
     }
   }
 
@@ -45,8 +47,8 @@ const PaseSocio = ({ vencHs }: { vencHs: number }) => {
         })
         //    await imprimir(datos)
         await imprimir({...datos, codigo, fechaEmision: toLocalISOString(new Date()), fechaVencimiento: toLocalISOString(fechaVencimientoDate)})
-        
       } catch (error) {
+        setError("Error al enviar el formulario")
         console.error("Error al enviar el formulario:", error)
       }
   }
@@ -99,7 +101,7 @@ const PaseSocio = ({ vencHs }: { vencHs: number }) => {
           autoComplete="off"
           autoFocus
           required
-          onChange={(value) => setDatos({ ...datos, dni: value })}
+          onChange={(value) =>{ setDatos({ ...datos, dni: value }); setError(null)}}
           label="Documento"
           variant="outlined"
           name="dni"
@@ -108,10 +110,11 @@ const PaseSocio = ({ vencHs }: { vencHs: number }) => {
         type="submit" 
         variant="contained" 
         color="primary"
-        disabled={!datos.dni || datos.dni.length < 7}
+        disabled={!datos.dni || datos.dni.length < 7 || !!error}
       >
           Buscar Socio
       </Button>
+      {error && <Typography color="error">{error}</Typography>}
     </Box>
   )
 }
