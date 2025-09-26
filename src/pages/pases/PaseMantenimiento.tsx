@@ -97,7 +97,12 @@ const PaseMantenimiento = () => {
             variant="outlined" 
             fullWidth 
         />
-        <Button type="submit" variant="contained" color="primary">
+        <Button 
+            type="submit" 
+            variant="contained" 
+            color="primary"
+            disabled={!datos.nombre || !datos.apellido || !datos.dni || datos.dni.length < 7 || !datos.tarea}
+        >
             Imprimir
         </Button>
     </Box>

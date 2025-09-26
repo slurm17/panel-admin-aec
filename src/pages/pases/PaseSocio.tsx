@@ -104,7 +104,12 @@ const PaseSocio = ({ vencHs }: { vencHs: number }) => {
           variant="outlined"
           name="dni"
       />
-      <Button type="submit" variant="contained" color="primary">
+      <Button 
+        type="submit" 
+        variant="contained" 
+        color="primary"
+        disabled={!datos.dni || datos.dni.length < 7}
+      >
           Buscar Socio
       </Button>
     </Box>

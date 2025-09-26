@@ -1,4 +1,4 @@
-import { Button, Stack, Typography } from "@mui/material";
+import { Button, Container, Stack, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import io from "socket.io-client";
 import { postRele } from "../../api/rele.api";
@@ -113,69 +113,77 @@ const ControlAcceso2: React.FC = () => {
     }
   };
   return (
-    <div style={{ fontFamily: "Arial, sans-serif", maxWidth: 600, margin: "2rem auto", padding: "1rem" }}>
-      <h1 style={{ textAlign: "center" }}>Control de Accesos - Club</h1>
-      <div style={{ fontWeight: "bold", fontSize: "1.2rem", margin: "1rem 0" }}>{estado}</div>
-      <Typography 
-        variant="h4" 
-        component="h2" 
-        sx={{ textAlign: "center", fontWeight: "bold", fontSize: "1.2rem", margin: "1rem 0" }}>
-          {datos.nombre}
-      </Typography>
-      <Typography 
-        variant="h4" 
-        component="h2" 
-        sx={{ textAlign: "center", fontWeight: "bold", fontSize: "1.2rem", margin: "1rem 0" }}>
-          {datos.dni ? `DNI: ${datos.dni}` : ''}
-      </Typography>
-      <Typography 
-        variant="h4" 
-        component="h2" 
-        sx={{ textAlign: "center", fontWeight: "bold", fontSize: "1.2rem", margin: "1rem 0" }}>
-          {datos.nroSocio ? `Socio nro: ${datos.nroSocio}` : ''}
-      </Typography>
-      <Typography 
-        variant="h4" 
-        component="h2" 
-        sx={{ textAlign: "center", fontWeight: "bold", fontSize: "1.2rem", margin: "1rem 0" }}>
-          {datos.mensaje}
-      </Typography>
-      <Stack direction="row" spacing={2}>
-      <Button  
-        variant="contained" 
-        color="primary"
-        onClick={handleUnPaseEntrada}
-      >
-        Liberar 1 pase entrada
-      </Button>
-      <Button variant="contained" color="primary" onClick={handleUnPaseSalida}>
-        Liberar 1 pase salida
-      </Button>
-      <Button variant="contained" color="primary" onClick={handleLibreEntrada}>
-        Pase libre entrada
-      </Button>
-      <Button variant="contained" color="primary" onClick={handleLibreSalida}>
-        Pase libre salida
-      </Button>
+    <Container>
+      <Stack spacing={2} sx={{ marginBottom: "1rem" }}>
+        <Stack direction="row" spacing={2}>
+          <Button  
+            variant="contained" 
+            color="primary"
+            onClick={handleUnPaseEntrada}
+          >
+            Liberar 1 pase entrada
+          </Button>
+          <Button variant="contained" color="primary" onClick={handleUnPaseSalida}>
+            Liberar 1 pase salida
+          </Button>
+          <Button variant="contained" color="primary" onClick={handleLibreEntrada}>
+            Pase libre entrada
+          </Button>
+          <Button variant="contained" color="primary" onClick={handleLibreSalida}>
+            Pase libre salida
+          </Button>
+        </Stack> 
+        <Button fullWidth variant="contained" color="primary" onClick={handleEmergencia}>
+          Emergencia
+        </Button>
       </Stack>
-      <Button variant="contained" color="primary" onClick={handleEmergencia}>
-        Emergencia
-      </Button>
-      {/* {fotoVisible && (
-        <img
-          src="/img/socio.jpg"
-          alt="Foto Socio"
-          style={{
-            maxWidth: 150,
-            display: "block",
-            margin: "1rem auto",
-            borderRadius: 8,
-            boxShadow: "0 0 10px #ccc",
-          }}
-        />
-      )} */}
-    </div>
+      <h1 style={{ textAlign: "center" }}>Control de Accesos - Club</h1>
+        <Typography 
+          variant="h4" 
+          component="h2" 
+          sx={{ textAlign: "center", fontWeight: "bold", fontSize: "1.2rem", margin: "1rem 0" }}>
+            {estado}
+        </Typography>
+        <Typography 
+          variant="h4" 
+          component="h2" 
+          sx={{ textAlign: "center", fontWeight: "bold", fontSize: "1.2rem", margin: "1rem 0" }}>
+            {datos.nombre}
+        </Typography>
+        <Typography 
+          variant="h4" 
+          component="h2" 
+          sx={{ textAlign: "center", fontWeight: "bold", fontSize: "1.2rem", margin: "1rem 0" }}>
+            {datos.dni ? `DNI: ${datos.dni}` : ''}
+        </Typography>
+        <Typography 
+          variant="h4" 
+          component="h2" 
+          sx={{ textAlign: "center", fontWeight: "bold", fontSize: "1.2rem", margin: "1rem 0" }}>
+            {datos.nroSocio ? `Socio nro: ${datos.nroSocio}` : ''}
+        </Typography>
+        <Typography 
+          variant="h4" 
+          component="h2" 
+          sx={{ textAlign: "center", fontWeight: "bold", fontSize: "1.2rem", margin: "1rem 0" }}>
+            {datos.mensaje}
+        </Typography> 
+    </Container>
   );
 };
 
 export default ControlAcceso2;
+
+  {/* {fotoVisible && (
+    <img
+      src="/img/socio.jpg"
+      alt="Foto Socio"
+      style={{
+        maxWidth: 150,
+        display: "block",
+        margin: "1rem auto",
+        borderRadius: 8,
+        boxShadow: "0 0 10px #ccc",
+      }}
+    />
+  )} */}

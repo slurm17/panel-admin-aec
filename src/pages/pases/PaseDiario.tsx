@@ -94,7 +94,12 @@ const PaseDiario = ({vencHs}: {vencHs: number}) => {
             variant="outlined" 
             fullWidth 
         />
-        <Button type="submit" variant="contained" color="primary">
+        <Button 
+            type="submit" 
+            variant="contained" 
+            color="primary"
+            disabled={!datos.nombre || !datos.apellido || !datos.dni || datos.dni.length < 7}
+        >
             Imprimir
         </Button>
     </Box>

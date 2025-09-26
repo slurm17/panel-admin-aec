@@ -261,7 +261,12 @@ const PaseInvitado = () => {
           name="dni"
           variant="outlined"
       />
-      <Button type="submit" variant="contained" color="primary">
+      <Button 
+        type="submit" 
+        variant="contained" 
+        color="primary"
+        disabled={!datos.dni || datos.dni.length < 7}
+      >
           Buscar Socio
       </Button>
     </Box>
