@@ -9,6 +9,7 @@ import { postQrCode } from "../../api/qr.api"
 import { DesktopDatePicker, TimePicker } from '@mui/x-date-pickers';
 import { toLocalISOString } from "../../functions/toLocalISOString"
 import { imprimir } from "../../api/paseDiario"
+import { daysBetween } from "./functions/daysBetween"
 type FormValues = {
   inicioDate: Date | null;
   inicioTime: Date | null;
@@ -37,7 +38,7 @@ const PaseInvitado = () => {
     finTime: ''
   })
   const [values, setValues] = useState<FormValues>({
-    inicioDate: new Date(),
+    inicioDate: null,
     inicioTime: null,
     finDate: null,
     finTime: null
@@ -95,6 +96,10 @@ const PaseInvitado = () => {
             setErrorSubmit('Error: La hora de fin debe ser posterior a la hora de inicio')
             return
           }
+        }
+        if (daysBetween(inicioFecha, finFecha) > 7){
+          setErrorSubmit('Error: La cantidad máxima de días entre la fecha de inicio y fin debe ser de 7 días')
+          return
         }
         for (let i = 0; i < pasesAImprimir || 0; i++) {
           const codigo = generarCodigoQR({
