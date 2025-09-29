@@ -10,6 +10,7 @@ import { DesktopDatePicker, TimePicker } from '@mui/x-date-pickers';
 import { toLocalISOString } from "../../functions/toLocalISOString"
 import { imprimir } from "../../api/paseDiario"
 import { daysBetween } from "./functions/daysBetween"
+import type { ApiError } from "../../api/client.fetch"
 type FormValues = {
   inicioDate: Date | null;
   inicioTime: Date | null;
@@ -57,8 +58,8 @@ const PaseInvitado = () => {
       setDatos({ ...datos, nombre: data.nombre })
       setSocioData(data)
     } catch (error) {
-      setErrorSocio("Socio no encontrado")
-      console.error("Error al enviar el formulario:", error)
+      const apiErr = error as ApiError
+      setErrorSocio(apiErr.message)
     }
   }
 
@@ -131,7 +132,8 @@ const PaseInvitado = () => {
         }
       }
     } catch (error) {
-      console.error("🚀 ~ imprimirPase ~ error:", error)
+      const apiErr = error as ApiError
+      alert(apiErr.message)
     }
   }
 

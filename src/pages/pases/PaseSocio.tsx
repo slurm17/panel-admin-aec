@@ -8,6 +8,7 @@ import { generarCodigoQR } from "../../functions/generarCodigoQr"
 import { postQrCode } from "../../api/qr.api"
 import { toLocalISOString } from "../../functions/toLocalISOString"
 import { imprimir } from "../../api/paseDiario"
+import type { ApiError } from "../../api/client.fetch"
 
 const PaseSocio = ({ vencHs }: { vencHs: number }) => {
   const [datos, setDatos] = useState<{ dni: string, nombre: string }>({
@@ -22,11 +23,10 @@ const PaseSocio = ({ vencHs }: { vencHs: number }) => {
     try {
       const data = await getSocioAccess(datos.dni)
       setDatos({ ...datos, nombre: data.nombre })
-      console.log(data)
       setSocioData(data)
     } catch (error) {
-      setError("Socio no encontrado")
-      console.error(error)
+      const apiErr = error as ApiError
+      setError(apiErr.message)
     }
   }
 
@@ -48,8 +48,8 @@ const PaseSocio = ({ vencHs }: { vencHs: number }) => {
         //    await imprimir(datos)
         await imprimir({...datos, codigo, fechaEmision: toLocalISOString(new Date()), fechaVencimiento: toLocalISOString(fechaVencimientoDate)})
       } catch (error) {
-        setError("Error al enviar el formulario")
-        console.error("Error al enviar el formulario:", error)
+        const apiErr = error as ApiError
+        setError(apiErr.message)
       }
   }
 
@@ -114,7 +114,7 @@ const PaseSocio = ({ vencHs }: { vencHs: number }) => {
       >
           Buscar Socio
       </Button>
-      {error && <Typography color="error">{error}</Typography>}
+      {!!error && <Typography color="error">{error}</Typography>}
     </Box>
   )
 }
