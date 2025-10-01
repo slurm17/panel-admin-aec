@@ -2,6 +2,7 @@ import { Button, Container, Stack, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import io from "socket.io-client";
 import { postRele } from "../../api/rele.api";
+import { postReleLibre } from "../../api/releLibre.api";
 
 type Socio = {
   dni: string;
@@ -88,7 +89,7 @@ const ControlAcceso2: React.FC = () => {
   const handleLibreEntrada = async () => {
     // Lógica para activar el relé
     try {
-      await postRele('2');
+      await postReleLibre('2');
     } catch (error) {
       console.log("🚀 ~ handleActivarRele ~ error:", error)
     }
@@ -97,7 +98,7 @@ const ControlAcceso2: React.FC = () => {
   const handleLibreSalida = async () => {
     // Lógica para activar el relé
     try {
-      await postRele('3');
+      await postReleLibre('3');
     } catch (error) {
       console.log("🚀 ~ handleActivarRele ~ error:", error)
     }
@@ -106,8 +107,8 @@ const ControlAcceso2: React.FC = () => {
   const handleEmergencia = async () => {
     // Lógica para activar el relé
     try {
-      postRele('2');
-      postRele('3');
+      postReleLibre('2');
+      postReleLibre('3');
     } catch (error) {
       console.log("🚀 ~ handleActivarRele ~ error:", error)
     }

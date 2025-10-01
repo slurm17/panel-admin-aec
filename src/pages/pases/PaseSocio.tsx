@@ -1,21 +1,24 @@
-import { Box, Button, Card, CardContent, Divider, Stack, Typography } from "@mui/material"
+import { Box, Button, Stack, Typography } from "@mui/material"
 import { useState } from "react"
 import { getSocioAccess } from "../../api/socio.api"
 import type { SocioAccess } from "../../types/socioAccess"
-import { addDays, format, set } from "date-fns"
+import { addDays, set } from "date-fns"
 import { DocumentoField } from "../../components/DocumentoField"
 import { generarCodigoQR } from "../../functions/generarCodigoQr"
 import { postQrCode } from "../../api/qr.api"
 import { toLocalISOString } from "../../functions/toLocalISOString"
 import { imprimir } from "../../api/paseDiario"
 import type { ApiError } from "../../api/client.fetch"
+import CardInfoSocio from "../../components/cardInfoSocio/CardInfoSocio"
 
 const PaseSocio = ({ vencHs }: { vencHs: number }) => {
+  const urlImageSocio = import.meta.env.VITE_URL_IMAGES
   const [datos, setDatos] = useState<{ dni: string, nombre: string }>({
     dni: '',
     nombre: '',
     // apellido: '',
   })
+  const [src, setSrc] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null)
   const [socioData, setSocioData] = useState<SocioAccess | null>(null)
   const onSumbit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -24,6 +27,15 @@ const PaseSocio = ({ vencHs }: { vencHs: number }) => {
       const data = await getSocioAccess(datos.dni)
       setDatos({ ...datos, nombre: data.nombre })
       setSocioData(data)
+      fetch(`${urlImageSocio}/fotos-socios/${datos.dni}.jpg`)
+      .then((res) => {
+        if (!res.ok) {
+          setSrc(null);
+          throw new Error("No existe imagen");
+        }
+        setSrc(res.url);
+      })
+      .catch((error) => console.error(error));
     } catch (error) {
       const apiErr = error as ApiError
       setError(apiErr.message)
@@ -55,34 +67,17 @@ const PaseSocio = ({ vencHs }: { vencHs: number }) => {
 
   if (socioData) {
     return (
-      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-        <Card sx={{ borderRadius: 3, boxShadow: 3, maxWidth: 400, p: 1 }}>
-          <CardContent>
-            <Typography variant="h6" gutterBottom>
-              Datos del Socio
-            </Typography>
-            <Divider sx={{ mb: 2 }} />
-            <Stack spacing={1}>
-              <Typography variant="body1">
-                <strong>Documento:</strong> {datos.dni.replace(/\B(?=(\d{3})+(?!\d))/g, ".")}
-              </Typography>
-              <Typography variant="body1">
-                <strong>Número de Socio:</strong> {socioData.num_socio}
-              </Typography>
-              <Typography variant="body1">
-                <strong>Nombre:</strong> {socioData.nombre}
-              </Typography>
-              <Stack direction="row" alignItems="center" spacing={1}>
-                <Typography variant="body1"><strong>Estado:</strong> {socioData.estado_socio} </Typography>
-              </Stack>
-              <Typography variant="body1">
-                <strong>Fecha de Estado:</strong> {format(new Date(socioData.fecha_estado), "dd/MM/yyyy")}{/* HH:mm*/}
-              </Typography>
-            </Stack>
-          </CardContent>
-        </Card>
+      <Box sx={{ display: 'flex', width: '100%', flexDirection: 'column', gap: 2 }}>
+        <CardInfoSocio 
+          dni={datos.dni}
+          numSocio={socioData.num_socio}
+          nombre={socioData.nombre}
+          estadoSocio={socioData.estado_socio}
+          fechaEstado={socioData.fecha_estado}
+          foto={src}
+        />
         <Stack sx={{ display: 'flex', flexDirection: 'row', gap: 2 }} maxWidth={'sm'}>
-          <Button variant="contained" onClick={() => setSocioData(null)}>Buscar otro Socio</Button>
+          <Button variant="contained" onClick={() => {setSocioData(null); setDatos({ dni: '', nombre: '' })}}>Buscar otro Socio</Button>
           <Button variant="contained" onClick={imprimirPase} color="primary">Imprimir Pase</Button>
         </Stack>
       </Box>

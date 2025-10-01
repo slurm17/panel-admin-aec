@@ -1,8 +1,7 @@
-import { Box, Button, Card, CardContent, Divider, Stack, TextField, Typography } from "@mui/material"
+import { Box, Button, Stack, TextField, Typography } from "@mui/material"
 import { getSocioAccess } from "../../api/socio.api"
 import { useState } from "react"
 import type { SocioAccess } from "../../types/socioAccess"
-import { format } from "date-fns"
 import { DocumentoField } from "../../components/DocumentoField"
 import { generarCodigoQR } from "../../functions/generarCodigoQr"
 import { postQrCode } from "../../api/qr.api"
@@ -11,6 +10,7 @@ import { toLocalISOString } from "../../functions/toLocalISOString"
 import { imprimir } from "../../api/paseDiario"
 import { daysBetween } from "./functions/daysBetween"
 import type { ApiError } from "../../api/client.fetch"
+import CardInfoSocio from "../../components/cardInfoSocio/CardInfoSocio"
 type FormValues = {
   inicioDate: Date | null;
   inicioTime: Date | null;
@@ -25,6 +25,8 @@ type FormValuesError = {
   finTime: string | null;
 };
 const PaseInvitado = () => {
+  const [src, setSrc] = useState<string | null>(null);
+  const urlImageSocio = import.meta.env.VITE_URL_IMAGES
   const [datos, setDatos] = useState<{ dni: string, nombre: string }>({ 
     dni: '',
     nombre: '',
@@ -57,6 +59,16 @@ const PaseInvitado = () => {
       const data = await getSocioAccess(datos.dni)
       setDatos({ ...datos, nombre: data.nombre })
       setSocioData(data)
+      fetch(`${urlImageSocio}/fotos-socios/${datos.dni}.jpg`)
+      .then((res) => {
+        if (!res.ok) {
+          setSrc(null);
+          throw new Error("No existe imagen");
+        }
+        setSrc(res.url);
+      })
+      .catch((error) => console.error(error));
+
     } catch (error) {
       const apiErr = error as ApiError
       setErrorSocio(apiErr.message)
@@ -141,31 +153,14 @@ const PaseInvitado = () => {
     return (
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, width: '100%' }}>
         <Stack sx={{ display: 'flex', flexDirection: 'row', gap: 4 }}>
-          <Card sx={{ borderRadius: 3, boxShadow: 1, maxWidth: 400, p: 1 }}>
-            <CardContent>
-              <Typography variant="h6" gutterBottom>
-                Datos del Socio
-              </Typography>
-              <Divider sx={{ mb: 2 }} />
-              <Stack spacing={1}>
-                <Typography variant="body1">
-                  <strong>Documento:</strong> {datos.dni.replace(/\B(?=(\d{3})+(?!\d))/g, ".")}
-                </Typography>
-                <Typography variant="body1">
-                  <strong>Número de Socio:</strong> {socioData.num_socio}
-                </Typography>
-                <Typography variant="body1">
-                  <strong>Nombre:</strong> {socioData.nombre}
-                </Typography>
-                <Stack direction="row" alignItems="center" spacing={1}>
-                  <Typography variant="body1"><strong>Estado:</strong> {socioData.estado_socio} </Typography>
-                </Stack>
-                <Typography variant="body1">
-                  <strong>Fecha de Estado:</strong> {format(new Date(socioData.fecha_estado), "dd/MM/yyyy")}{/* HH:mm*/}
-                </Typography>
-              </Stack>
-            </CardContent>
-          </Card>
+          <CardInfoSocio
+            dni={datos.dni}
+            numSocio={socioData.num_socio}
+            nombre={socioData.nombre}
+            estadoSocio={socioData.estado_socio}
+            fechaEstado={socioData.fecha_estado}
+            foto={src}
+          />
           <Stack sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
             <Stack sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
                 <Typography>Inicio de vigencia del pase</Typography> 
@@ -229,7 +224,11 @@ const PaseInvitado = () => {
         </Stack>
           {errorSumbit && <Typography color="error">{errorSumbit}</Typography>} 
         <Stack sx={{ display: 'flex', flexDirection: 'row', gap: 2 }}>
-          <Button variant="contained" onClick={() => setSocioData(null)}>Buscar otro Socio</Button>
+          <Button 
+            variant="contained" 
+            onClick={() => {setDatos({ dni: '', nombre: '' }); setSocioData(null)}}>
+              Buscar otro Socio
+          </Button>
           <Button 
             disabled={
               pasesAImprimir === 0 ||
