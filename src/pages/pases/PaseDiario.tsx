@@ -47,7 +47,7 @@ const PaseDiario = ({vencHs}: {vencHs: number}) => {
             })
             const fechaEmision = toLocalISOString(new Date())
             const fechaVencimiento = toLocalISOString(fechaVencimientoDate)
-            await imprimir({...datos, codigo, fechaVencimiento, fechaEmision})
+            await imprimir({...datos, codigo, fechaVencimiento, fechaEmision, tipoDePase: 'PASE DIARIO'})
             console.log('imprimir')
         } catch (error) {
           console.error("Error al enviar el formulario:", error)

@@ -15,7 +15,8 @@ const PaseMantenimiento = () => {
         nombre: '',
         apellido: '',
         dni: '',
-        tarea: ''
+        tarea: '',
+        tipoDePase: 'PASE MANTENIMIENTO'
     })
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -54,7 +55,7 @@ const PaseMantenimiento = () => {
         gap: 2
     }} maxWidth={'sm'} onSubmit={onSumbit}>
         <Typography variant="h4" component="h1" gutterBottom>
-            Pase de Matenimiento
+            Pase de Mantenimiento
         </Typography>
         <TextField 
             autoFocus

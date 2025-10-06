@@ -13,12 +13,12 @@ function App() {
         <Routes>
           <Route element={<MainLayout/>}>
             {/* <Route path="/" element={<Navigate to={routes.MAIN} replace />} /> */}
-            <Route path={routes.HOME} element={<Home />} />
+            <Route path={routes.HOME} element={<Pases />} />
             <Route path={routes.INFO_DISPLAY_SCREEN} element={<InfoDisplayScreen />} />
             <Route path={routes.CONTROL_ACCESO} element={<ControlAcceso />} />
             <Route path={routes.PASE_DIARIO} element={<Pases />} />
             <Route path={routes.CONFIG} element={<Configuracion />} />
-            <Route path="*" element={<Home />} />
+            <Route path="*" element={<Pases />} />
           </Route>
         </Routes>
       </HashRouter>

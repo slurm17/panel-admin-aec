@@ -13,6 +13,9 @@ import CardInfoSocio from "../../components/cardInfoSocio/CardInfoSocio"
 
 const PaseSocio = ({ vencHs }: { vencHs: number }) => {
   const urlImageSocio = import.meta.env.VITE_URL_IMAGES
+  const [loadingImpresion, setLoadingImpresion] = useState(false)
+  const [errorImpresion, setErrorImpresion] = useState<string | null>(null)
+  const [successImpresion, setSuccessImpresion] = useState<string | null>(null)
   const [datos, setDatos] = useState<{ dni: string, nombre: string }>({
     dni: '',
     nombre: '',
@@ -43,6 +46,8 @@ const PaseSocio = ({ vencHs }: { vencHs: number }) => {
   }
 
   const imprimirPase = async () => {
+      setErrorImpresion(null)
+      setSuccessImpresion(null)
       const fechaVencimientoDate = set(addDays(new Date(), 1), { hours: vencHs, minutes: 0 })
       const codigo = generarCodigoQR({
           tipo: 'socio',
@@ -50,6 +55,7 @@ const PaseSocio = ({ vencHs }: { vencHs: number }) => {
           fechaVencimiento: fechaVencimientoDate,
       })
       try {
+        setLoadingImpresion(true)
         await postQrCode({
           codigo,
           tipo: 'socio',
@@ -58,10 +64,19 @@ const PaseSocio = ({ vencHs }: { vencHs: number }) => {
           fecha_venc: toLocalISOString(fechaVencimientoDate)
         })
         //    await imprimir(datos)
-        await imprimir({...datos, codigo, fechaEmision: toLocalISOString(new Date()), fechaVencimiento: toLocalISOString(fechaVencimientoDate)})
+        await imprimir({
+          ...datos, 
+          codigo, 
+          fechaEmision: toLocalISOString(new Date()), 
+          fechaVencimiento: toLocalISOString(fechaVencimientoDate),
+          tipoDePase: 'PASE SOCIO'
+        })
+        setSuccessImpresion('Pase impreso correctamente')
       } catch (error) {
         const apiErr = error as ApiError
-        setError(apiErr.message)
+        setErrorImpresion(apiErr.message)
+      } finally {
+        setLoadingImpresion(false)
       }
   }
 
@@ -77,9 +92,27 @@ const PaseSocio = ({ vencHs }: { vencHs: number }) => {
           foto={src}
         />
         <Stack sx={{ display: 'flex', flexDirection: 'row', gap: 2 }} maxWidth={'sm'}>
-          <Button variant="contained" onClick={() => {setSocioData(null); setDatos({ dni: '', nombre: '' })}}>Buscar otro Socio</Button>
-          <Button variant="contained" onClick={imprimirPase} color="primary">Imprimir Pase</Button>
+          <Button 
+            variant="contained" 
+            onClick={() => {
+              setSocioData(null); 
+              setDatos({ dni: '', nombre: '' })
+              setErrorImpresion(null)
+              setSuccessImpresion(null)
+            }}>
+              Buscar otro Socio
+          </Button>
+          <Button 
+            sx={{ maxWidth: '500px' }}
+            disabled={loadingImpresion} 
+            loading={loadingImpresion}
+            variant="contained" 
+            loadingPosition="end"
+            onClick={imprimirPase} 
+            color="primary"> {loadingImpresion ? 'Imprimiendo espere...' : ' Imprimir Pase'}</Button>
         </Stack>
+        {errorImpresion && <Typography color="error">{errorImpresion}</Typography>}
+        {successImpresion && <Typography color="success">{successImpresion}</Typography>}
       </Box>
     )
   }

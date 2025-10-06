@@ -11,6 +11,9 @@ import { imprimir } from "../../api/paseDiario"
 import { daysBetween } from "./functions/daysBetween"
 import type { ApiError } from "../../api/client.fetch"
 import CardInfoSocio from "../../components/cardInfoSocio/CardInfoSocio"
+// import { QRCodeCanvas } from 'qrcode.react';
+// import { useRef } from "react";
+
 type FormValues = {
   inicioDate: Date | null;
   inicioTime: Date | null;
@@ -25,6 +28,7 @@ type FormValuesError = {
   finTime: string | null;
 };
 const PaseInvitado = () => {
+  // const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [src, setSrc] = useState<string | null>(null);
   const urlImageSocio = import.meta.env.VITE_URL_IMAGES
   const [datos, setDatos] = useState<{ dni: string, nombre: string }>({ 
@@ -35,6 +39,26 @@ const PaseInvitado = () => {
   const [socioData, setSocioData] = useState<SocioAccess | null>(null)
   const [errorSumbit, setErrorSubmit] = useState<string | null>(null)
   const [errorSocio, setErrorSocio] = useState<string | null>(null)
+  // const [valueCheck, setValueCheck] = useState('imprimir');
+  // const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   setValueCheck((event.target as HTMLInputElement).value);
+  // };
+  // const copyQrImage = async () => {
+  //   const canvas = canvasRef.current;
+  //   if (!canvas) return;
+  //   canvas.toBlob(async (blob) => {
+  //     if (!blob) return;
+  //     try {
+  //       await navigator.clipboard.write([
+  //         new ClipboardItem({ "image/png": blob }),
+  //       ]);
+  //       alert("✅ QR copiado como imagen");
+  //     } catch (err) {
+  //       console.error("Error copiando QR:", err);
+  //       alert("❌ No se pudo copiar la imagen (quizás el navegador no lo soporta).");
+  //     }
+  //   }, "image/png");
+  // };
   const [error, setError] = useState<FormValuesError>({
     inicioDate: '',
     inicioTime: '',
@@ -52,6 +76,12 @@ const PaseInvitado = () => {
     setErrorSubmit(null)
     setValues({ ...values, [field]: newValue });
   };
+
+  // const enviarWhatsApp = async () => {
+  //   await copyQrImage()
+  //   const url = `https://wa.me/3434486607?text=${encodeURIComponent('hola')}`;
+  //   window.open(url, "_blank"); // abre en nueva pestaña
+  // };
 
   const onSumbit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -132,12 +162,16 @@ const PaseInvitado = () => {
               fecha_venc: toLocalISOString(combineDateAndTime(values.finDate, values.finTime))
           })
           //    await imprimir(datos)
+
+
           await imprimir({
             ...datos, 
             codigo, 
             fechaEmision: toLocalISOString(combineDateAndTime(values.inicioDate, values.inicioTime)), 
-            fechaVencimiento: toLocalISOString(combineDateAndTime(values.finDate, values.finTime))
+            fechaVencimiento: toLocalISOString(combineDateAndTime(values.finDate, values.finTime)),
+            tipoDePase: 'PASE INVITADO'
           })
+
           
           console.log('imprimir')
           
@@ -205,22 +239,51 @@ const PaseInvitado = () => {
                   />
                 </Stack>
             </Stack>
+            {/* <FormControl>
+              <FormLabel id="demo-row-radio-buttons-group-label"> Forma de distribuir el pase QR </FormLabel>
+              <RadioGroup
+                row
+                aria-labelledby="demo-row-radio-buttons-group-label"
+                name="row-radio-buttons-group"
+                onChange={handleChange}
+                value={valueCheck}
+              >
+                <FormControlLabel 
+                  defaultChecked
+                  value={'imprimir'} 
+                  control={<Radio />} 
+                  label="Imprimir" 
+                />
+                <FormControlLabel 
+                  value="whatsapp" 
+                  control={<Radio />} 
+                  label="Enviar por Whatsapp" 
+                />
+              </RadioGroup>
+            </FormControl>
+            <QRCodeCanvas value="https://reactjs.org/" ref={canvasRef} />
+            <TextField/>
+            <Button onClick={enviarWhatsApp}>Enviar</Button> */}
           </Stack>
         </Stack>
         <Stack sx={{ display: 'flex', flexDirection: 'row', gap: 2, alignItems: 'center' }}>
-          <Typography>
-            Cantidad de pases a imprimir:
-          </Typography>
-          <TextField
-            sx={{ maxWidth: 60, bgcolor: 'white' }}
-            value={pasesAImprimir}
-            slotProps={{
-              htmlInput: { maxLength: 3, minLength: 1 }
-            }}
-            onChange={(e) => setPasesAImprimir(Number(e.target.value))}
-            variant="outlined"
-            size="small"
-          />
+          {/* { valueCheck === 'imprimir' &&  */}
+          <>
+            <Typography>
+              Cantidad de pases a imprimir:
+            </Typography>
+            <TextField
+              sx={{ maxWidth: 60, bgcolor: 'white' }}
+              value={pasesAImprimir}
+              slotProps={{
+                htmlInput: { maxLength: 3, minLength: 1 }
+              }}
+              onChange={(e) => setPasesAImprimir(Number(e.target.value))}
+              variant="outlined"
+              size="small"
+            />
+          </>
+          {/* } */}
         </Stack>
           {errorSumbit && <Typography color="error">{errorSumbit}</Typography>} 
         <Stack sx={{ display: 'flex', flexDirection: 'row', gap: 2 }}>
@@ -241,6 +304,7 @@ const PaseInvitado = () => {
               !!error.finDate ||
               !!errorSumbit
             } 
+            // sx={{ maxWidth: '500px' }}
             variant="contained" 
             onClick={imprimirPase} 
             color="primary">
