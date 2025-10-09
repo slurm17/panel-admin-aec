@@ -1,12 +1,12 @@
 import { HashRouter, Route, Routes } from 'react-router-dom'
 import MainLayout from './components/mainLayout';
 import routes from './constants/routes'
-import Home from './pages/home';
+// import Home from './pages/home';
 import InfoDisplayScreen from './pages/infoDisplayScreen';
 import ControlAcceso from './pages/controlAcceso';
 import Pases from './pages/pases';
 import Configuracion from './pages/configuracion';
-
+import Historial from './pages/historial';
 function App() {
   return (
       <HashRouter>
@@ -18,6 +18,7 @@ function App() {
             <Route path={routes.CONTROL_ACCESO} element={<ControlAcceso />} />
             <Route path={routes.PASE_DIARIO} element={<Pases />} />
             <Route path={routes.CONFIG} element={<Configuracion />} />
+            <Route path={routes.HISTORIAL} element={<Historial />} />
             <Route path="*" element={<Pases />} />
           </Route>
         </Routes>

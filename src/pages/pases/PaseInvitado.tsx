@@ -11,8 +11,6 @@ import { imprimir } from "../../api/paseDiario"
 import { daysBetween } from "./functions/daysBetween"
 import type { ApiError } from "../../api/client.fetch"
 import CardInfoSocio from "../../components/cardInfoSocio/CardInfoSocio"
-// import { QRCodeCanvas } from 'qrcode.react';
-// import { useRef } from "react";
 
 type FormValues = {
   inicioDate: Date | null;
@@ -162,8 +160,6 @@ const PaseInvitado = () => {
               fecha_venc: toLocalISOString(combineDateAndTime(values.finDate, values.finTime))
           })
           //    await imprimir(datos)
-
-
           await imprimir({
             ...datos, 
             codigo, 

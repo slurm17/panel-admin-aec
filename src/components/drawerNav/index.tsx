@@ -1,15 +1,15 @@
 import Drawer from '@mui/material/Drawer'
 import Toolbar from '@mui/material/Toolbar'
 import Divider from '@mui/material/Divider'
-import { List } from '@mui/material'
-
+import { Box, List } from '@mui/material'
+import imgNetter from '../../assets/logo_netter.png'
 import DrawerItem from '../drawerItem'
 import type { ListItemsNavData } from '../../types/ListItemsNavData'
 
 interface DrawerNavProps {
   listItemsNav : ListItemsNavData[],
 }
-const drawerWidthMd = 240
+const drawerWidthMd = 190
 const drawerWidthSm = 190
 const DrawerNav = ({ listItemsNav/*, ...props*/ } : DrawerNavProps) => {
   return (
@@ -27,12 +27,26 @@ const DrawerNav = ({ listItemsNav/*, ...props*/ } : DrawerNavProps) => {
       variant="permanent"
       anchor="left"
       >
-      <Toolbar />
+      <Toolbar sx={{
+        padding: '0px !important'
+      }}>
+        <Box 
+          component={'img'}
+          src={imgNetter} 
+          alt="Logo Netter" 
+          sx={{ 
+            width: '100%', 
+            height: '100%',
+            objectFit: 'contain',
+            padding: 0
+          }} 
+      />
+      </Toolbar>
       <Divider />
       <List>
         {listItemsNav.map((item, i) => (
-          <DrawerItem 
-            key={i} 
+          <DrawerItem
+            key={i}
             text={item.text} 
             // icon={item.icon} 
             navigateTo={item.navigateTo} 

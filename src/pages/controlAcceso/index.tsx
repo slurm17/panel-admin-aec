@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import io from "socket.io-client";
 import { postRele } from "../../api/rele.api";
 import { postReleLibre } from "../../api/releLibre.api";
+import PanelBotones from "./components/PanelBotones";
 
 type Socio = {
   dni: string;
@@ -115,16 +116,62 @@ const ControlAcceso2: React.FC = () => {
   };
   return (
     <Container>
-      <Stack spacing={2} sx={{ marginBottom: "1rem" }}>
-        <Stack direction="row" spacing={2}>
+      {/* <Stack spacing={2} sx={{ marginBottom: "1rem" }}> */}
+      <Stack spacing={2} direction={"row"} sx={{ 
+        marginBottom: "1rem",
+        justifyContent: 'center',
+        // alignItems: 'center'
+        }} >
+        <PanelBotones text={'Entrada'}>
+            <Button  
+            variant="contained" 
+            color="primary"
+            onClick={handleUnPaseEntrada}
+            sx={{
+              maxWidth: '500px',
+            }}
+          >
+            Liberar 1 pase
+          </Button>
+          <Button variant="contained" color="primary" onClick={handleLibreEntrada}>
+            Pase libre
+          </Button>
+        </PanelBotones>
+        <PanelBotones text={'Salida'}>
+            <Button  
+            variant="contained" 
+            color="primary"
+            onClick={handleUnPaseSalida}
+            sx={{
+              maxWidth: '500px',
+            }}
+          >
+            Liberar 1 pase
+          </Button>
+          <Button variant="contained" color="primary" onClick={handleLibreSalida}>
+            Pase libre
+          </Button>
+        </PanelBotones>
+        <PanelBotones text="Emergencia">
+          <Button fullWidth variant="contained" color="primary" onClick={handleEmergencia}>
+            Emergencia
+          </Button>
+        </PanelBotones>
+        </Stack>
+        {/* <Stack direction="row" sx={{ justifyContent: "left", marginBottom: "1rem"}} spacing={2}>
           <Button  
             variant="contained" 
             color="primary"
             onClick={handleUnPaseEntrada}
+            sx={{
+              maxWidth: '500px',
+            }}
           >
             Liberar 1 pase entrada
           </Button>
-          <Button variant="contained" color="primary" onClick={handleUnPaseSalida}>
+          <Button sx={{
+              maxWidth: '500px',
+            }} variant="contained" color="primary" onClick={handleUnPaseSalida}>
             Liberar 1 pase salida
           </Button>
           <Button variant="contained" color="primary" onClick={handleLibreEntrada}>
@@ -133,11 +180,11 @@ const ControlAcceso2: React.FC = () => {
           <Button variant="contained" color="primary" onClick={handleLibreSalida}>
             Pase libre salida
           </Button>
-        </Stack> 
-        <Button fullWidth variant="contained" color="primary" onClick={handleEmergencia}>
+        </Stack>  */}
+      {/* </Stack> */}
+        {/* <Button fullWidth variant="contained" color="primary" onClick={handleEmergencia}>
           Emergencia
-        </Button>
-      </Stack>
+        </Button> */}
       <h1 style={{ textAlign: "center" }}>Control de Accesos - Club</h1>
         <Typography 
           variant="h4" 
