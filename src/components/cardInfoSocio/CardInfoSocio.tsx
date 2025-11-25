@@ -9,6 +9,7 @@ interface Props {
     estadoSocio: string,
     fechaEstado: string,
     foto: string | null,
+    idFamiliar?: string | null,
 }
 
 const estadoMap: Record<string | number, string> = {
@@ -56,8 +57,13 @@ const CardInfoSocio = (props: Props) => {
             </Typography>
             <Typography variant="body1">
               <strong>Fecha de Estado:</strong>{" "}
-              {format(new Date(props.fechaEstado), "dd/MM/yyyy")}
+              { props.fechaEstado ? format(new Date(props.fechaEstado), "dd/MM/yyyy") : "Sin fecha" }
             </Typography>
+            {props.idFamiliar && 
+            <Typography variant="body1">
+              <strong>Familiar:</strong>{" "}
+              { props.idFamiliar }
+            </Typography>}
           </Stack>
         </Stack>
       </CardContent>

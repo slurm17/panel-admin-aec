@@ -27,7 +27,6 @@ const ControlAcceso2: React.FC = () => {
     nroSocio: "",
     mensaje: ''
   });
-  // const [fotoVisible, setFotoVisible] = useState(false);
   const socketUrl = import.meta.env.VITE_SOCKET_URL
 
   useEffect(() => {
@@ -42,26 +41,12 @@ const ControlAcceso2: React.FC = () => {
         nroSocio: datos_socio?.num_socio,
         mensaje : mensaje
       })
-      // setEstado(`${mensaje} ${JSON.stringify(data)}`);
-      // console.log("🚀 ~ ControlAcceso2 ~ data:", data)
-      // const { dni, socio, mensaje } = data;
-      // setEstado(`${mensaje} ${socio?.nombre} (${dni})  ENTRADA`);
-      // if (socio && socio.dni === dni) {
-      //   setFotoVisible(true);
-      // } else {
-      //   setFotoVisible(false);
-      // }
     });
 
     socket.on("scanner-salida", (data: ResultadoSocio) => {
       console.log("🚀 ~ ControlAcceso2 ~ data:", data)
       const { dni, socio, mensaje } = data;
       setEstado(`${mensaje} ${socio?.nombre} (${dni}) SALIDA`);
-      // if (socio && socio.dni === dni) {
-      //   setFotoVisible(true);
-      // } else {
-      //   setFotoVisible(false);
-      // }
     });
 
     return () => {
@@ -158,33 +143,6 @@ const ControlAcceso2: React.FC = () => {
           </Button>
         </PanelBotones>
         </Stack>
-        {/* <Stack direction="row" sx={{ justifyContent: "left", marginBottom: "1rem"}} spacing={2}>
-          <Button  
-            variant="contained" 
-            color="primary"
-            onClick={handleUnPaseEntrada}
-            sx={{
-              maxWidth: '500px',
-            }}
-          >
-            Liberar 1 pase entrada
-          </Button>
-          <Button sx={{
-              maxWidth: '500px',
-            }} variant="contained" color="primary" onClick={handleUnPaseSalida}>
-            Liberar 1 pase salida
-          </Button>
-          <Button variant="contained" color="primary" onClick={handleLibreEntrada}>
-            Pase libre entrada
-          </Button>
-          <Button variant="contained" color="primary" onClick={handleLibreSalida}>
-            Pase libre salida
-          </Button>
-        </Stack>  */}
-      {/* </Stack> */}
-        {/* <Button fullWidth variant="contained" color="primary" onClick={handleEmergencia}>
-          Emergencia
-        </Button> */}
       <h1 style={{ textAlign: "center" }}>Control de Accesos - Club</h1>
         <Typography 
           variant="h4" 
@@ -221,17 +179,3 @@ const ControlAcceso2: React.FC = () => {
 };
 
 export default ControlAcceso2;
-
-  {/* {fotoVisible && (
-    <img
-      src="/img/socio.jpg"
-      alt="Foto Socio"
-      style={{
-        maxWidth: 150,
-        display: "block",
-        margin: "1rem auto",
-        borderRadius: 8,
-        boxShadow: "0 0 10px #ccc",
-      }}
-    />
-  )} */}

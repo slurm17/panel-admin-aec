@@ -89,6 +89,7 @@ const PaseSocio = ({ vencHs }: { vencHs: number }) => {
           nombre={socioData.nombre}
           estadoSocio={socioData.estado_socio}
           fechaEstado={socioData.fecha_estado}
+          idFamiliar={socioData?.id_familiar}
           foto={src}
         />
         <Stack sx={{ display: 'flex', flexDirection: 'row', gap: 2 }} maxWidth={'sm'}>
