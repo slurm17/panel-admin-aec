@@ -4,5 +4,5 @@ export interface SocioAccess {
     nombre: string;
     estado_socio: string;
     fecha_estado: string;
-    id_familiar?: string | null;
+    id_fliar?: string | null;
 }
