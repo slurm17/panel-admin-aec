@@ -5,7 +5,9 @@ export interface DataPaseDiario {
   codigo: string;
   fechaVencimiento: string;
   fechaEmision: string;
-  tipoDePase: string
+  tipoDePase: string;
+  ip: string | undefined;
+  puerto: string | undefined
 }
 
 export interface DataPaseMantenimiento {
@@ -13,5 +15,7 @@ export interface DataPaseMantenimiento {
   apellido: string;
   dni: string;
   tarea: string;
-  tipoDePase: string
+  tipoDePase: string;
+  ip: string | undefined;
+  puerto: string | undefined
 }

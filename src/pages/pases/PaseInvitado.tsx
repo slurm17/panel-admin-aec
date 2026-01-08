@@ -1,4 +1,4 @@
-import { Box, Button, Stack, TextField, Typography } from "@mui/material"
+import { Alert, Box, Button, Stack, TextField, Typography } from "@mui/material"
 import { getSocioAccess } from "../../api/socio.api"
 import { useState } from "react"
 import type { SocioAccess } from "../../types/socioAccess"
@@ -11,6 +11,8 @@ import { imprimir } from "../../api/paseDiario"
 import { daysBetween } from "./functions/daysBetween"
 import type { ApiError } from "../../api/client.fetch"
 import CardInfoSocio from "../../components/cardInfoSocio/CardInfoSocio"
+import { useImpresoraStore } from "../../store/impresoraStore"
+import ImprimirButton from "../../components/imprimirButton/ImprimirButton"
 
 type FormValues = {
   inicioDate: Date | null;
@@ -33,30 +35,11 @@ const PaseInvitado = () => {
     dni: '',
     nombre: '',
   })
+  const impresoraActiva = useImpresoraStore((s) => s.impresoraActiva);
   const [pasesAImprimir, setPasesAImprimir] = useState<number>(1)
   const [socioData, setSocioData] = useState<SocioAccess | null>(null)
   const [errorSumbit, setErrorSubmit] = useState<string | null>(null)
   const [errorSocio, setErrorSocio] = useState<string | null>(null)
-  // const [valueCheck, setValueCheck] = useState('imprimir');
-  // const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-  //   setValueCheck((event.target as HTMLInputElement).value);
-  // };
-  // const copyQrImage = async () => {
-  //   const canvas = canvasRef.current;
-  //   if (!canvas) return;
-  //   canvas.toBlob(async (blob) => {
-  //     if (!blob) return;
-  //     try {
-  //       await navigator.clipboard.write([
-  //         new ClipboardItem({ "image/png": blob }),
-  //       ]);
-  //       alert("✅ QR copiado como imagen");
-  //     } catch (err) {
-  //       console.error("Error copiando QR:", err);
-  //       alert("❌ No se pudo copiar la imagen (quizás el navegador no lo soporta).");
-  //     }
-  //   }, "image/png");
-  // };
   const [error, setError] = useState<FormValuesError>({
     inicioDate: '',
     inicioTime: '',
@@ -74,12 +57,6 @@ const PaseInvitado = () => {
     setErrorSubmit(null)
     setValues({ ...values, [field]: newValue });
   };
-
-  // const enviarWhatsApp = async () => {
-  //   await copyQrImage()
-  //   const url = `https://wa.me/3434486607?text=${encodeURIComponent('hola')}`;
-  //   window.open(url, "_blank"); // abre en nueva pestaña
-  // };
 
   const onSumbit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -165,7 +142,9 @@ const PaseInvitado = () => {
             codigo, 
             fechaEmision: toLocalISOString(combineDateAndTime(values.inicioDate, values.inicioTime)), 
             fechaVencimiento: toLocalISOString(combineDateAndTime(values.finDate, values.finTime)),
-            tipoDePase: 'PASE INVITADO'
+            tipoDePase: 'PASE INVITADO',
+            ip: impresoraActiva?.ip,
+            puerto: impresoraActiva?.puerto
           })
 
           
@@ -235,31 +214,6 @@ const PaseInvitado = () => {
                   />
                 </Stack>
             </Stack>
-            {/* <FormControl>
-              <FormLabel id="demo-row-radio-buttons-group-label"> Forma de distribuir el pase QR </FormLabel>
-              <RadioGroup
-                row
-                aria-labelledby="demo-row-radio-buttons-group-label"
-                name="row-radio-buttons-group"
-                onChange={handleChange}
-                value={valueCheck}
-              >
-                <FormControlLabel 
-                  defaultChecked
-                  value={'imprimir'} 
-                  control={<Radio />} 
-                  label="Imprimir" 
-                />
-                <FormControlLabel 
-                  value="whatsapp" 
-                  control={<Radio />} 
-                  label="Enviar por Whatsapp" 
-                />
-              </RadioGroup>
-            </FormControl>
-            <QRCodeCanvas value="https://reactjs.org/" ref={canvasRef} />
-            <TextField/>
-            <Button onClick={enviarWhatsApp}>Enviar</Button> */}
           </Stack>
         </Stack>
         <Stack sx={{ display: 'flex', flexDirection: 'row', gap: 2, alignItems: 'center' }}>
@@ -288,7 +242,9 @@ const PaseInvitado = () => {
             onClick={() => {setDatos({ dni: '', nombre: '' }); setSocioData(null)}}>
               Buscar otro Socio
           </Button>
-          <Button 
+          <ImprimirButton 
+            ip={impresoraActiva?.ip}
+            puerto={impresoraActiva?.puerto}
             disabled={
               pasesAImprimir === 0 ||
               pasesAImprimir === null ||
@@ -305,7 +261,7 @@ const PaseInvitado = () => {
             onClick={imprimirPase} 
             color="primary">
               Imprimir Pase/s
-          </Button>
+          </ImprimirButton>
         </Stack>
       </Box>
     )
@@ -336,7 +292,7 @@ const PaseInvitado = () => {
       >
           Buscar Socio
       </Button>
-      {errorSocio && <Typography color="error">{errorSocio}</Typography>}
+      {errorSocio && <Alert severity="error">{errorSocio}</Alert>}
     </Box>
   )
 }

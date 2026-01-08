@@ -5,7 +5,7 @@ import routes from './constants/routes'
 import InfoDisplayScreen from './pages/infoDisplayScreen';
 import ControlAcceso from './pages/controlAcceso';
 import Pases from './pages/pases';
-import Configuracion from './pages/configuracion';
+import Configuracion from './pages/configuracion/';
 import Historial from './pages/historial';
 function App() {
   return (

@@ -1,4 +1,4 @@
-import { Box, Button, Stack, Typography } from "@mui/material"
+import { Alert, Box, Button, Stack, Typography } from "@mui/material"
 import { useState } from "react"
 import { getSocioAccess } from "../../api/socio.api"
 import type { SocioAccess } from "../../types/socioAccess"
@@ -10,9 +10,12 @@ import { toLocalISOString } from "../../functions/toLocalISOString"
 import { imprimir } from "../../api/paseDiario"
 import type { ApiError } from "../../api/client.fetch"
 import CardInfoSocio from "../../components/cardInfoSocio/CardInfoSocio"
+import { useImpresoraStore } from "../../store/impresoraStore"
+import ImprimirButton from "../../components/imprimirButton/ImprimirButton"
 
 const PaseSocio = ({ vencHs }: { vencHs: number }) => {
   const urlImageSocio = import.meta.env.VITE_URL_IMAGES
+  const impresoraActiva = useImpresoraStore((s) => s.impresoraActiva);
   const [loadingImpresion, setLoadingImpresion] = useState(false)
   const [errorImpresion, setErrorImpresion] = useState<string | null>(null)
   const [successImpresion, setSuccessImpresion] = useState<string | null>(null)
@@ -69,7 +72,9 @@ const PaseSocio = ({ vencHs }: { vencHs: number }) => {
           codigo, 
           fechaEmision: toLocalISOString(new Date()), 
           fechaVencimiento: toLocalISOString(fechaVencimientoDate),
-          tipoDePase: 'PASE SOCIO'
+          tipoDePase: 'PASE SOCIO',
+          ip: impresoraActiva?.ip,
+          puerto: impresoraActiva?.puerto
         })
         setSuccessImpresion('Pase impreso correctamente')
       } catch (error) {
@@ -82,7 +87,7 @@ const PaseSocio = ({ vencHs }: { vencHs: number }) => {
 
   if (socioData) {
     return (
-      <Box sx={{ display: 'flex', width: '100%', flexDirection: 'column', gap: 2 }}>
+      <Box sx={{ display: 'flex', width: '100%', flexDirection: 'column', gap: 2, maxWidth: 'md' }}>
         <CardInfoSocio 
           dni={datos.dni}
           numSocio={socioData.num_socio}
@@ -92,7 +97,7 @@ const PaseSocio = ({ vencHs }: { vencHs: number }) => {
           idFamiliar={socioData?.id_fliar}
           foto={src}
         />
-        <Stack sx={{ display: 'flex', flexDirection: 'row', gap: 2 }} maxWidth={'sm'}>
+        <Stack sx={{ display: 'flex', flexDirection: 'row', gap: 2 }}>
           <Button 
             variant="contained" 
             onClick={() => {
@@ -103,17 +108,19 @@ const PaseSocio = ({ vencHs }: { vencHs: number }) => {
             }}>
               Buscar otro Socio
           </Button>
-          <Button 
+          <ImprimirButton 
+            puerto={impresoraActiva?.puerto}
+            ip={impresoraActiva?.ip}
             sx={{ maxWidth: '500px' }}
             disabled={loadingImpresion} 
             loading={loadingImpresion}
             variant="contained" 
             loadingPosition="end"
             onClick={imprimirPase} 
-            color="primary"> {loadingImpresion ? 'Imprimiendo espere...' : ' Imprimir Pase'}</Button>
+            color="primary"> {loadingImpresion ? 'Imprimiendo espere...' : ' Imprimir Pase'}</ImprimirButton>
         </Stack>
-        {errorImpresion && <Typography color="error">{errorImpresion}</Typography>}
-        {successImpresion && <Typography color="success">{successImpresion}</Typography>}
+        {errorImpresion && <Alert severity="error">{errorImpresion}</Alert>}
+        {successImpresion && <Alert severity="success">{successImpresion}</Alert>}
       </Box>
     )
   }
@@ -143,7 +150,7 @@ const PaseSocio = ({ vencHs }: { vencHs: number }) => {
       >
           Buscar Socio
       </Button>
-      {!!error && <Typography color="error">{error}</Typography>}
+      {!!error && <Alert severity="error">{error}</Alert>}      
     </Box>
   )
 }

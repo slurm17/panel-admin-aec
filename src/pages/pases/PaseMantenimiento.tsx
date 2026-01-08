@@ -1,22 +1,26 @@
 import React, { useState } from 'react'
 // import { imprimir } from '../../api/paseDiario'
 import type { DataPaseMantenimiento } from '../../types/dataPaseDiario'
-import { Box, Button, TextField, Typography } from '@mui/material'
+import { Box, TextField, Typography } from '@mui/material'
 import { DocumentoField } from '../../components/DocumentoField'
 import { generarCodigoQR } from '../../functions/generarCodigoQr'
 import { postQrCode } from '../../api/qr.api'
 import { toLocalISOString } from '../../functions/toLocalISOString'
 import { set } from 'date-fns'
 import { imprimir } from '../../api/paseDiario'
+import { useImpresoraStore } from '../../store/impresoraStore'
+import ImprimirButton from '../../components/imprimirButton/ImprimirButton'
 
 const PaseMantenimiento = () => {
-
+  const impresoraActiva = useImpresoraStore((s) => s.impresoraActiva);
    const [datos, setDatos] = useState<DataPaseMantenimiento>({
         nombre: '',
         apellido: '',
         dni: '',
         tarea: '',
-        tipoDePase: 'PASE MANTENIMIENTO'
+        tipoDePase: 'PASE MANTENIMIENTO',
+        ip: impresoraActiva?.ip,
+        puerto: impresoraActiva?.puerto
     })
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -98,14 +102,16 @@ const PaseMantenimiento = () => {
             variant="outlined" 
             fullWidth 
         />
-        <Button 
+        <ImprimirButton 
+            ip={impresoraActiva?.ip}
+            puerto={impresoraActiva?.puerto}
             type="submit" 
             variant="contained" 
             color="primary"
             disabled={!datos.nombre || !datos.apellido || !datos.dni || datos.dni.length < 7 || !datos.tarea}
         >
             Imprimir
-        </Button>
+        </ImprimirButton>
     </Box>
   )
 }
